@@ -60,7 +60,7 @@ def post_create(title: str = Form(), content: str = Form()):
     new_id = max(posts.keys())+1 #전체키목록추출, 여기서 max함수 써서 가장 큰 숫자나옴
     posts[new_id] = {'id': new_id, 'title':title, 'content':content}
 
-    return RedirectionResponse(f'/posts/{new_id}', status_code=303) #어디로갈지정보넣어줘야
+    return RedirectResponse(f'/posts/{new_id}', status_code=303)
 
 #하나의 게시글을 출력
 @app.get('/posts/{post_id}')
@@ -73,3 +73,31 @@ def post_detail(request: Request, post_id: int): #url에 해당하는 post_id는
         name='detail.html',
         context={'post': post}
     )
+
+@app.get('/posts/{post_id}/edit')
+def post_edit(request: Request, post_id: int):
+
+    #SQL에서 SELECT*FROM posts WHERE post_id=1;
+    post = posts[post_id] #전체게시물에서 하나의 데이터만 찾는 것
+
+    return templates.TemplateResponse(
+        request=request,
+        name='edit.html',
+        context={'post': post}
+    )
+
+@app.post('/posts/{post_id}/update')
+def post_update(post_id: int, title: str = Form(), content: str = Form()):
+    #기존 정보 찾기 
+    old_post = posts[post_id]
+
+    #새로운 정보로 수정하기
+    old_post['title'] = title #url을통해 들어오는 title
+    old_post['content'] = content
+
+    new_post = old_post #newpost를 원래가지고있는 딕셔너리에 업데이트해야 
+
+    #전체 데이터에 적용시키기
+    posts[post_id] = new_post 
+
+    return RedirectResponse(f'/posts/{post_id}', status_code = 303) #fastapi 에있는 기능. 원하는 위치로 이동 가능
