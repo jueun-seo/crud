@@ -10,5 +10,8 @@ code .
 git init
 
 #최초상태로 commit 남기면
+# git add . 
+# git commit 까지함
 
+# git하면 ingonre 파일 만들기
 ```
