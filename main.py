@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request #request는 하나의 객체인 것. 그걸 사용자한테 넘겨줘야함
+from fastapi import FastAPI, Request, Form #request는 하나의 객체인 것. 그걸 사용자한테 넘겨줘야함
 from fastapi.templating import Jinja2Templates #이걸 사용하려면 밑에 templates 변수 생성
 
 app = FastAPI()
@@ -23,5 +23,9 @@ def ping(request: Request): #request에 Request 객체 형태가 들어와야한
 
 #받은 정보를 사용하는 페이지
 @app.get("/pong")
-def pong():
-    pass
+def pong(count: int):
+    return {'result': count**3} #사용자한테 정보받아 3제곱해서 돌려주는
+
+@app.post('/pong')
+def pong_post(count: int = Form()): #url에 form 안넣으면 여기서 꺼내와주세요, 1번줄도 추가
+    return {'result': count**2}
