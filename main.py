@@ -5,6 +5,11 @@ app = FastAPI()
 # direcotry는 어떤 위치에 html 파일을 찾을 위치
 templates = Jinja2Templates(directory='templates') # templates 폴더 만들기 
 
+# 가상 데이터
+posts = {
+    1: {"id": 1, "title": "hi", "content": "반갑습니다"}, #게시물은 제목 가질 수 있음
+    2: {"id": 2, "title": "배고파요", "content": "뭐먹지"},
+}
 
 @app.get("/")
 def home():
