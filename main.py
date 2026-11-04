@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Request, Form #request는 하나의 객체인 것. 그걸 사용자한테 넘겨줘야함
 from fastapi.templating import Jinja2Templates #이걸 사용하려면 밑에 templates 변수 생성
+from fastapi.responses import RedirectResponse
 
 app = FastAPI()
 # direcotry는 어떤 위치에 html 파일을 찾을 위치
@@ -43,10 +44,30 @@ def post_list(request: Request):
         context = {'posts' : list(posts.values())}
     )
 
+
+#사용자가 데이터 입력할 수 있는 페이지 제공
+@app.get('/posts/new')
+def post_new(request: Request):
+    return templates.TemplateResponse(
+        request=request,
+        name='new.html'
+    )
+
+#사용자가 넘겨준 데이터를 저장 
+@app.post('/posts/create')
+def post_create(title: str = Form(), content: str = Form()):
+    # return {'t':title, 'c': content}
+    new_id = max(posts.keys())+1 #전체키목록추출, 여기서 max함수 써서 가장 큰 숫자나옴
+    posts[new_id] = {'id': new_id, 'title':title, 'content':content}
+
+    return RedirectionResponse(f'/posts/{new_id}', status_code=303) #어디로갈지정보넣어줘야
+
 #하나의 게시글을 출력
 @app.get('/posts/{post_id}')
 def post_detail(request: Request, post_id: int): #url에 해당하는 post_id는 숫자가 들어올 예정
+    
     post = posts[post_id] #전체 데이터 중에 내가 보고싶은 데이터 하나를 골라 그걸 post라는 단수변수에 저장
+    
     return templates.TemplateResponse( #이렇게 가져온 post데이터를 templates에 보내는
         request=request,
         name='detail.html',
