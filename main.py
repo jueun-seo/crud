@@ -7,7 +7,7 @@ templates = Jinja2Templates(directory='templates') # templates 폴더 만들기
 
 # 가상 데이터
 posts = {
-    1: {"id": 1, "title": "hi", "content": "반갑습니다"}, #게시물은 제목 가질 수 있음
+    1: {"id": 1, "title": "hi", "content": "반갑습니다."},
     2: {"id": 2, "title": "배고파요", "content": "뭐먹지"},
 }
 
@@ -17,7 +17,7 @@ def home():
 
 
 #사용자에게 정보를 입력받는 페이지 
-@app.get("/ping")
+@app.get('/ping')
 def ping(request: Request): #request에 Request 객체 형태가 들어와야한다고 타입으로 선언. 만약 request 안에 숫자 들어오면 타입안맞는다고 함
     return templates.TemplateResponse(
         request=request,
@@ -27,10 +27,22 @@ def ping(request: Request): #request에 Request 객체 형태가 들어와야한
 #사용자에게 정보를 입력받는 페이지를 리턴 
 
 #받은 정보를 사용하는 페이지
-@app.get("/pong")
+@app.get('/pong')
 def pong(count: int):
     return {'result': count**3} #사용자한테 정보받아 3제곱해서 돌려주는
 
 @app.post('/pong')
 def pong_post(count: int = Form()): #url에 form 안넣으면 여기서 꺼내와주세요, 1번줄도 추가
     return {'result': count**2}
+
+@app.get('/posts')
+def post_list(request: Request):
+    return templates.TemplateResponse(
+        request=request, #이거 쓸 때 39번 괄호 안 같이 써야
+        name = 'list.html',
+        context = {'posts' : list(posts.values())}
+    )
+
+@app.get('/posts/{post_id}')
+def post_detail():
+    pass
