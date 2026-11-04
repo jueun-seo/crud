@@ -101,3 +101,9 @@ def post_update(post_id: int, title: str = Form(), content: str = Form()):
     posts[post_id] = new_post 
 
     return RedirectResponse(f'/posts/{post_id}', status_code = 303) #fastapi 에있는 기능. 원하는 위치로 이동 가능
+
+@app.post('/posts/{post_id}/delete')
+def post_delete(post_id: int):
+    posts.pop(post_id) #pop; 특정키워드 뽑을 때
+
+    return RedirectResponse('/posts', status_code=303)
