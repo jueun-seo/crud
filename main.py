@@ -43,6 +43,12 @@ def post_list(request: Request):
         context = {'posts' : list(posts.values())}
     )
 
+#하나의 게시글을 출력
 @app.get('/posts/{post_id}')
-def post_detail():
-    pass
+def post_detail(request: Request, post_id: int): #url에 해당하는 post_id는 숫자가 들어올 예정
+    post = posts[post_id] #전체 데이터 중에 내가 보고싶은 데이터 하나를 골라 그걸 post라는 단수변수에 저장
+    return templates.TemplateResponse( #이렇게 가져온 post데이터를 templates에 보내는
+        request=request,
+        name='detail.html',
+        context={'post': post}
+    )
